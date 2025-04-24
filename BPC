@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zone de Recherche</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #c4cecf;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .oval-bg {
+      background: linear-gradient(to bottom, #2276a8, #014f7e);
+      border-radius: 50% / 30%;
+    }
+
+    #suggestions {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: white;
+      color: black;
+      border: 2px solid #014F7E;
+      border-radius: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      z-index: 10;
+      font-size: 14px;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .suggestion-item {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .suggestion-item:hover {
+      background-color: #FA751E;
+      color: white;
+    }
+
+    #errorMessage {
+      margin-top: 25px;
+      color: #FA751E;
+      font-weight: bold;
+      font-size: 1.1em;
+      text-align: center;
+    }
+
+    .cursor-pointer {
+      cursor: pointer;
+    }
+
+    #searchButton:hover {
+      transform: scale(1.1);
+      transition: transform 0.2s ease;
+    }
+
+    /* Position absolue du premier logo */
+    .logo1 {
+      position: absolute;
+      right: 560px; /* Décale le logo de la droite de la page */
+      top: 20px; /* Décale le logo légèrement vers le bas */
+      width: 80px; /* Taille du logo */
+      z-index: 50; /* Assure que le logo est au-dessus des autres éléments */
+      cursor: pointer;
+    }
+
+    /* Position absolue du deuxième logo */
+    .logo2 {
+      position: absolute;
+      right: 1265px; /* Décale le logo de la droite de la page */
+      top: 25px; /* Décale le logo un peu plus bas que le premier */
+      width: 75px; /* Taille du logo */
+      z-index: 50; /* Assure que le logo est au-dessus des autres éléments */
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+
+  <!-- Premier logo (RAR) positionné en absolu sur la page -->
+  <a href=" target="_blank" title="Aller sur le site RAR">
+    <img 
+      src="file:///X:/projets/Outil%20aide%20conception/RAR.png" 
+      alt="Logo RAR"
+      class="logo1"
+    />
+  </a>
+
+  <!-- Deuxième logo (RAC) positionné en absolu sur la page -->
+  <a href=" target="_blank" title="Aller sur le site RAC">
+    <img 
+      src="file:///X:/projets/Outil%20aide%20conception/RAC.png" 
+      alt="Logo RAC"
+      class="logo2"
+    />
+  </a>
+
+  <div class="oval-bg w-[90%] max-w-3xl p-8 md:p-16 relative text-white text-center">
+    <h1 class="text-2xl md:text-4xl font-bold tracking-widest mb-6">RECHERCHE SUR LE SITE</h1>
+    
+    <div class="relative w-full max-w-lg mx-auto">
+      <input 
+        type="text" 
+        id="searchInput"
+        placeholder="Tapez votre recherche..." 
+        class="w-full bg-white text-black px-4 py-2 border-none rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+        autocomplete="off"
+      />
+      <div id="suggestions"></div>
+    </div>
+
+    <img 
+      src="https://img.icons8.com/m_outlined/512/FD7E14/search.png" 
+      alt="Icône loupe" 
+      class="w-24 h-24 absolute bottom-4 right-4 object-contain cursor-pointer z-20"
+      id="searchButton"
+      title="Rechercher"
+    />
+
+    <div id="errorMessage"></div>
+  </div>
+
+  <script>
+    const keywords = {
+      "pied machine": "https://numadesk.sharepoint.com/teams/AidelaConception/SitePages/RC-PIED-MACHINE.aspx",
+      "poutre": "https://example.com/poutre"
+    };
+
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const errorMessage = document.getElementById('errorMessage');
+    const suggestionsDiv = document.getElementById('suggestions');
+
+    function showSuggestions(value) {
+      const input = value.toLowerCase().trim();
+      suggestionsDiv.innerHTML = "";
+
+      if (input === "") return;
+
+      const matches = Object.keys(keywords).filter(key => key.toLowerCase().startsWith(input)).slice(0, 3);
+
+      matches.forEach(match => {
+        const item = document.createElement("div");
+        item.classList.add("suggestion-item");
+        item.textContent = match;
+        item.addEventListener("click", () => {
+          searchInput.value = match;
+          suggestionsDiv.innerHTML = "";
+          triggerSearch(match);
+        });
+        suggestionsDiv.appendChild(item);
+      });
+    }
+
+    function triggerSearch(value) {
+      const input = value.toLowerCase().trim();
+      if (input === "") {
+        errorMessage.textContent = "Veuillez entrer un terme de recherche.";
+      } else if (keywords[input]) {
+        window.open(keywords[input], '_blank');
+        errorMessage.textContent = "";
+      } else {
+        errorMessage.textContent = "Aucun résultat trouvé pour votre recherche.";
+      }
+    }
+
+    searchInput.addEventListener("input", () => {
+      showSuggestions(searchInput.value);
+    });
+
+    // Action du bouton loupe au clic
+    searchButton.addEventListener("click", () => {
+      triggerSearch(searchInput.value);
+      suggestionsDiv.innerHTML = "";
+    });
+
+    // Action au pressage de la touche Entrée
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        triggerSearch(searchInput.value);
+        suggestionsDiv.innerHTML = "";
+      }
+    });
+  </script>
+</body>
+</html>
