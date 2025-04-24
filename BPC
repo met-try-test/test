@@ -88,7 +88,7 @@
   <!-- Premier logo (RAR) positionné en absolu sur la page -->
   <a href=" target="_blank" title="Aller sur le site RAR">
     <img 
-      src="file:///X:/projets/Outil%20aide%20conception/RAR.png" 
+      src="https://met-try-test.github.io/monprojet-html/RAR.png" 
       alt="Logo RAR"
       class="logo1"
     />
@@ -97,7 +97,7 @@
   <!-- Deuxième logo (RAC) positionné en absolu sur la page -->
   <a href=" target="_blank" title="Aller sur le site RAC">
     <img 
-      src="file:///X:/projets/Outil%20aide%20conception/RAC.png" 
+      src="https://met-try-test.github.io/monprojet-html/RAC.png" 
       alt="Logo RAC"
       class="logo2"
     />
